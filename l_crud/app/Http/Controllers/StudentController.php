@@ -30,27 +30,51 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
+    //     $request->validate([
+    //         'studnet_name' => 'required',
+    //         'student_email'         =>  'required|email|unique:students',
+    //         'student_image'         =>  'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048|dimensions:min_width=100,min_height=100,max_width=1000,max_height=1000'
+
+    //     ]);
+    //     $file_name = time() . '.' . $request->student_image->extension();
+    //     // time() dùng để lấy thời gian hiện tại
+    //     // extension() dùng để lấy đuôi file
+    //     $request->student_image->move(public_path('images'), $file_name);
+    //     // move() dùng để di chuyển file từ thư mục tạm sang thư mục chính
+    //     // public_path('images') dùng để lấy đường dẫn đến thư mục images
+    //     $student = new Student;
+    //     $student->student_name = $request->student_name;
+    //     // dòng này dùng để lấy dữ liệu từ form và lưu vào cột student_name
+    //     $student->student_email = $request->student_email;
+    //     $student->student_gender = $request->student_gender;
+    //     $student->student_image = $file_name;
+    //     $student->save();
+    //     return redirect()->route('students.index')
+    //         ->with('success', 'Student created successfully.');
+    //         public function store(Request $request)
+    // {
         $request->validate([
-            'studnet_name' => 'required',
+            'student_name'          =>  'required',
             'student_email'         =>  'required|email|unique:students',
             'student_image'         =>  'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048|dimensions:min_width=100,min_height=100,max_width=1000,max_height=1000'
-
         ]);
-        $file_name = time() . '.' . $request->student_image->extension();
-        // time() dùng để lấy thời gian hiện tại
-        // extension() dùng để lấy đuôi file
-        $request->student_image->move(public_path('images'), $file_name);
-        // move() dùng để di chuyển file từ thư mục tạm sang thư mục chính
-        // public_path('images') dùng để lấy đường dẫn đến thư mục images
+
+        $file_name = time() . '.' . request()->student_image->getClientOriginalExtension();
+
+        request()->student_image->move(public_path('images'), $file_name);
+
         $student = new Student;
+
         $student->student_name = $request->student_name;
-        // dòng này dùng để lấy dữ liệu từ form và lưu vào cột student_name
         $student->student_email = $request->student_email;
         $student->student_gender = $request->student_gender;
         $student->student_image = $file_name;
+
         $student->save();
-        return redirect()->route('students.index')
-            ->with('success', 'Student created successfully.');
+
+        return redirect()->route('students.index')->with('success', 'Student Added successfully.');
+
+
     }
 
     /**
@@ -77,7 +101,7 @@ class StudentController extends Controller
     {
         $request->validate(
             [
-                'student_name'      =>  'required',
+                'student_name'      =>  'required|alpha|max:255',
                 'student_email'     =>  'required|email',
                 'student_image'     =>  'image|mimes:jpg,png,jpeg,gif,svg|max:2048|dimensions:min_width=100,min_height=100,max_width=1000,max_height=1000'
             ]
